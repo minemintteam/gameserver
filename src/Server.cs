@@ -15,17 +15,13 @@ namespace GameServer
         }
         public void Start()
         {
-             server.Start();
-
+            server.Start();
             while (true)
             {
                 TcpClient client = server.AcceptTcpClient();
-                NetworkStream stream = client.GetStream();
-                stream.Write(System.Text.Encoding.ASCII.GetBytes("Hello World!"),0,System.Text.Encoding.ASCII.GetBytes("Hello World!").Length);
+                Console.WriteLine("Client connected");
             }
-        }  
-        public void Sex() {
-            Console.WriteLine("Hellow World!");
         }
+
     }
 }
