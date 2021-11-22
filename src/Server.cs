@@ -8,7 +8,8 @@ namespace GameServer
 {
     class Server 
     {
-        TcpListener server; 
+        Thread? handleClients;
+        TcpListener server;  
         public Server(string ip_string, int port_number)
         {
             server = new TcpListener(IPAddress.Parse(ip_string), port_number);
@@ -21,6 +22,10 @@ namespace GameServer
                 TcpClient client = server.AcceptTcpClient();
                 Console.WriteLine("Client connected");
             }
+        }
+
+        private void Auth() {
+
         }
 
     }
