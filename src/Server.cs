@@ -8,8 +8,9 @@ namespace GameServer
 {
     class Server 
     {
-        Thread? handleClients;
+        //Thread? handleClients;
         TcpListener server;  
+        TcpClient? client;
         public Server(string ip_string, int port_number)
         {
             server = new TcpListener(IPAddress.Parse(ip_string), port_number);
@@ -19,14 +20,18 @@ namespace GameServer
             server.Start();
             while (true)
             {
-                TcpClient client = server.AcceptTcpClient();
-                Console.WriteLine("Client connected");
+                client = server.AcceptTcpClient();         
+                //HandleClient(client);       
+                NetworkStream stream = client.GetStream();
+                StreamReader reader = new StreamReader(stream); 
+                StreamWriter writer = new StreamWriter(stream);
+
+                while (client.Connected)
+                {
+                    string? message = reader.ReadLine();
+                    Console.WriteLine(message);
+                }
             }
         }
-
-        private void Auth() {
-
-        }
-
     }
 }
