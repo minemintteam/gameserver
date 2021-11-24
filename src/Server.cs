@@ -6,16 +6,41 @@ namespace GameServer
 {
     class Server 
     {
-        //Thread? gameThread;
+        Thread? gameThread;
         TcpClient client;
         NetworkStream? stream;
-        FlatDB? flatDB;
+        FlatDB? gameDB;
         public Server(object obj, object obj2)
         {
             client = (TcpClient)obj;
-            flatDB = (FlatDB)obj2;
+            gameDB = (FlatDB)obj2;
+
             stream = client.GetStream();
             Console.WriteLine("Client connected");
+
+            gameThread = new Thread(new ThreadStart(Run));
+        }
+
+        private void Run()
+        {
+            while (true)
+            {
+                byte[] buffer = new byte[1024];
+                int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                if (bytesRead == 0)
+                {
+                    Console.WriteLine("Client disconnected");
+                    break;
+                }
+                string data = System.Text.Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                Console.WriteLine(data);
+                string[] splitData = data.Split('|');
+                switch (splitData[0])
+                {
+                    case "LOGIN":
+                        break;
+                }
+            }
         }
     }
 }
