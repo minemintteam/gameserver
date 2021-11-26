@@ -65,11 +65,20 @@ namespace GameServer
                 case "LOGIN":
                     break;
                 case "MOVE":
+                    string[]? splitData = data?[1].Split(',');
+                    gameDB?.Write(splitData?[0] + ":" + splitData?[1] + ":" + splitData?[2]);
+                    Console.WriteLine("MOVE " + splitData?[0] + " " + splitData?[1] + " " + splitData?[2]); 
                     break;
                 case "PING":
                     wsHelper?.SendMsg("PONG");
                     break;
+                default:
+                    Console.WriteLine("Unknown action: " + action);
+                    break;
             }
+        }
+
+        private void Relay(string message) {
         }
     }
 }
