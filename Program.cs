@@ -19,6 +19,7 @@ namespace GameServer
             Console.WriteLine("Game/Engine/Server v" + server_version);
 
             gameDB = new FlatDB("db");
+
             while(true) 
             {
                 client = server.AcceptTcpClient();

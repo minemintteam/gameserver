@@ -66,7 +66,7 @@ namespace GameServer
                     break;
                 case "MOVE":
                     string[]? splitData = data?[1].Split(',');
-                    gameDB?.Write(splitData?[0] + ":" + splitData?[1] + ":" + splitData?[2]);
+                    //gameDB?.setValue(splitData?[0], splitData?[1] + " " + splitData?[2]);
                     Console.WriteLine("MOVE " + splitData?[0] + " " + splitData?[1] + " " + splitData?[2]); 
                     break;
                 case "PING":
