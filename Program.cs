@@ -7,14 +7,14 @@ namespace GameServer
     class Program
     {
         static string server_version = "0.0.0.1";
-        static TcpListener? server;
+        static TcpListener? listener;
         static TcpClient? client;
-        static Server? server_instance;
+        static Server? server;
         static FlatDB? gameDB; //mailDB, serverLog, serverConfig;
         static void Main(string[] args)
         {
-            server = new TcpListener(IPAddress.Parse("127.0.0.1"), 80);
-            server.Start();
+            listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 80);
+            listener.Start();
 
             Console.WriteLine("Game/Engine/Server v" + server_version);
 
@@ -22,8 +22,8 @@ namespace GameServer
 
             while(true) 
             {
-                client = server.AcceptTcpClient();
-                server_instance = new Server(client, gameDB);
+                client = listener.AcceptTcpClient();
+                server = new Server(client, gameDB);
             }
         }    
     }

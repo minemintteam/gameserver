@@ -9,6 +9,7 @@ namespace GameServer
         StreamReader? streamReader;
         StreamWriter? streamWriter;
         List<string> file;
+
         public FlatDB(string fileName) {
             path = "C:/Temp/" + fileName + ".txt";
             if(!File.Exists(path)) {
@@ -31,15 +32,12 @@ namespace GameServer
         }
 
         public void setValue(string key, string value) {
-            Console.WriteLine("Setting value for key: " + key);
-            Console.WriteLine("Value: " + value);
             int index = getKeyIndex(key);
             if(index == -1) {
                 file.Add(key + ":" + value + "\n");
             } else {
                 file[index] = key + ":" + value + "\n";
             }
-            Console.WriteLine(file[0]);
         }
 
         public string? getValue(string key) {
@@ -49,6 +47,14 @@ namespace GameServer
             } else {
                 return file[index].Split(':')[1];
             }
+        }
+
+        public string getAllData() {
+            string data = "";
+            foreach(string line in file) {
+                data += line;
+            }
+            return data;
         }
 
         public void save() {

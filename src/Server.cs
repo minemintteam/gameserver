@@ -5,11 +5,13 @@ namespace GameServer
 {
     class Server 
     {
-        Thread? gameThread;
+        Thread? gameThread, updateThread;
+        Boolean running = true;
         TcpClient client;
         NetworkStream? stream;
         FlatDB? gameDB;
         WSHelper? wsHelper;
+        
         public Server(object obj, object obj2)
         {
             client = (TcpClient)obj;
@@ -21,11 +23,14 @@ namespace GameServer
 
             gameThread = new Thread(new ThreadStart(Run));
             gameThread.Start();
+
+            updateThread = new Thread(new ThreadStart(Relay));
+            updateThread.Start();
         }
 
         private void Run()
         {
-            while (true)
+            while (running)
             {
                 byte[] buffer = new byte[1024];
                 int? bytesRead = stream?.Read(buffer, 0, buffer.Length);
@@ -34,6 +39,7 @@ namespace GameServer
                 
                 if (bytesRead == 0)
                 {
+                    running = false;
                     Console.WriteLine("Client disconnected");
                     break;
                 }
@@ -56,6 +62,8 @@ namespace GameServer
                         HandleAction(message?[0], message);
                         break;
                 }
+
+                Relay();
             }
             
         }
@@ -66,19 +74,25 @@ namespace GameServer
                     break;
                 case "MOVE":
                     string[]? splitData = data?[1].Split(',');
-                    //gameDB?.setValue(splitData?[0], splitData?[1] + " " + splitData?[2]);
-                    Console.WriteLine("MOVE " + splitData?[0] + " " + splitData?[1] + " " + splitData?[2]); 
+                    gameDB?.setValue(splitData?[0] ?? "", splitData?[1] + "," + splitData?[2]);
+                    break;
+                case "ATTACK":
+                    break;
+                case "HEAL":
                     break;
                 case "PING":
                     wsHelper?.SendMsg("PONG");
                     break;
                 default:
-                    Console.WriteLine("Unknown action: " + action);
                     break;
             }
         }
 
-        private void Relay(string message) {
+        private void Relay() {
+            var data = gameDB?.getAllData();
+            if (data != null && data.Length > 0) {
+                wsHelper?.SendMsg(data);
+            }
         }
     }
 }
